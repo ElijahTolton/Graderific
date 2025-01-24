@@ -79,3 +79,84 @@ form input {
 .buttonRow button{
     width: 50%;
 }
+
+/*Phase 4: Borders, backgrounds, and whitespace*/
+body {
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #ddd;
+    padding: 1rem;
+    box-shadow: 0 0 5px gray;
+    padding: 0.5rem 1rem;
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between; /* Space between the links */
+    width: 92vw;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    line-height: 1;
+}
+
+nav h2{
+    margin: 0;
+}
+
+header h1{
+    color: black;
+    font-weight: bold;
+    width: 14.1rem;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+main h1{
+    margin-bottom: 0;
+}
+
+.ActionBox{
+    border-color: #204a87;
+    border-width: 2px;
+    border-style: solid;
+    background-color: #b1c3de;
+    padding: 0.5rem 1rem;
+    padding-bottom: 0.25rem;
+    margin-bottom: 1rem;
+    margin-top: 0;
+}
+
+.ActionBox p{
+    margin: 0.5rem;
+}
+
+.ActionRow{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.divLine{
+    margin-bottom: 0rem;
+    padding: 0;
+    border-bottom: 1.5px solid #ddd;
+}
+
+.heading{
+    margin-bottom: 1rem;
+}
+
+.heading h1{
+    margin:0;
+}
+.heading p{
+    margin: 0;
+}
