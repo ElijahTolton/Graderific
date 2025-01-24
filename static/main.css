@@ -1,1 +1,44 @@
-* { color: red; }
+/* Phase 2: Typography */
+
+body {
+    font-family: 'IBM Plex Sans', 'sans-serif';
+    line-height: 1.25;
+}
+
+table{
+    line-height: 1.5;
+}
+
+code, pre {
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+header{
+    font-size: 1.25rem;
+}
+
+header h1{
+    font-weight: bold;
+}
+
+header a {
+    color: #444;
+    text-decoration: none;
+    font-weight: normal;
+}
+
+.pageTitle{
+    font-size: 1.5rem;
+}
+
+#description{
+    font-size: 1rem;
+}
+
+form{
+    font-size: 1.25rem;
+}
+
+form input{
+    font-size: 1.25rem;
+}
