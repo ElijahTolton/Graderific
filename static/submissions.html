@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!-- I am using head and body tags because the live render with
+the live server extsneion doesn't work without them. -->
+<head>
+    <title>Assignment 1 (HTML)</title>
+    <link rel="icon" href="/static/favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <header>
+        <h1>3550</h1>
+        <nav>
+            <h2><a href="index.html">Assignments</a></h2>
+            <h2><a href="profile.html">Profile</a></h2>
+        </nav>
+    </header>
+    <h1>Homework 1 (HTML)</h1>
+    <p>All grades out of 100</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Submission</th>
+                <th>Grade</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <!--Submission links will be linked to nothing (#). There are no
+                submissions to show.-->
+                <td>s1</td>
+                <td><a href="#" title="View submission">Submission</a></td>
+                <td><input type="number" class="grade" min="0" max="100" value="0"></td>
+            </tr>
+            <tr>
+                <td>s2</td>
+                <td><a href="#" title="View submission">Submission</a></td>
+                <td><input type="number" class="grade" min="0" max="100" value="0"></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td><button id="submit">Submit</button></td>
+                <td> <a href="assignment.html">Back to assignment</a></td>
+            </tr>
+        </tfoot>
+    </table>
+</body>
+
