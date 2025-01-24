@@ -42,3 +42,40 @@ form{
 form input{
     font-size: 1.25rem;
 }
+
+/*Phase 3: Styling Links, Forms, and Tables*/
+nav a:hover{
+    text-decoration: underline;
+}
+
+table{
+    width: 100%;
+}
+
+.numColumn{
+    text-align: right;
+}
+
+table td, table th{
+    text-align: left;
+}
+
+.inputRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem; /* Add space between rows */
+}
+
+form input {
+    width: 50%;
+}
+
+.buttonRow {
+    display: flex;
+    justify-content: center;
+}
+
+.buttonRow button{
+    width: 50%;
+}
