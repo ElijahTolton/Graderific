@@ -10,37 +10,42 @@ the live server extsneion doesn't work without them. -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
+    
     <header>
-        <h1>CS 3550</h1>
-        <nav>
-            <h2><a href="index.html">Assignments</a></h2>
-            <h2><a href="profile.html">Profile</a></h2>
-        </nav>
+        <div class="navContainer">
+            <h1>CS 3550</h1>
+            <nav>
+                <h2><a href="index.html">Assignments</a></h2>
+                <h2 id="profile"><a href="profile.html">Profile</a></h2>
+            </nav>
+        </div>
     </header>
 
-    <div class="heading">
-        <h1 class="pageTitle">Homework 1 (HTML)</h1>
-        <div class="divLine"></div>
-        <p>Due September 08, total of 100 points</p>
-    </div>
-    <section class="ActionBox">
-        <p>Currently 2/3 submissions</p>
-        <div class="ActionRow">
-            <p>1 submission assigned to you</p>
-            <p><a href="submissions.html">Grade</a></p>
+    <div class="container">
+        <div class="heading">
+            <h1 class="pageTitle">Homework 1 (HTML)</h1>
+            <div class="divLine"></div>
+            <p>Due September 08, total of 100 points</p>
         </div>
-    </section>
+        <section class="ActionBox">
+            <p>Currently 2/3 submissions</p>
+            <div class="ActionRow">
+                <p>1 submission assigned to you</p>
+                <p><a href="submissions.html">Grade</a></p>
+            </div>
+        </section>
 
-    <main>
-        <h3 id="description">Description:</h3>
-        <p>In this assignment, you will set up a web server and write HTML for the grading application (Graderific) 
-            that you'll build all semester. Specifically, in this assignment, you will demonstrate that you can:</p>
-        <ul>
-            <li>Configure and start a <em>basic web server</em> using Django</li>
-            <li>Create <em>basic web pages</em> with HTML for data/content</li>
-        </ul>
-        <p>For example, here is the a page <strong>you will make,</strong> in a file called <code>assignments.html:</code></p>
-        <img src="/static/assignment.png" alt="Image of an assignment page of Homework 1 HTML. This image is what my webpage will look like at the end of the semester.">
-    </main>
+        <main>
+            <h3 id="description">Description:</h3>
+            <p>In this assignment, you will set up a web server and write HTML for the grading application (Graderific) 
+                that you'll build all semester. Specifically, in this assignment, you will demonstrate that you can:</p>
+            <ul>
+                <li>Configure and start a <em>basic web server</em> using Django</li>
+                <li>Create <em>basic web pages</em> with HTML for data/content</li>
+            </ul>
+            <p>For example, here is the a page <strong>you will make,</strong> in a file called <code>assignments.html:</code></p>
+            <img id="assign" src="/static/assignment.png" alt="Image of an assignment page of Homework 1 HTML. This image is what my webpage will look like at the end of the semester.">
+        </main>
+    </div>
 </body>
 
