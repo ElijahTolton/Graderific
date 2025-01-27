@@ -97,7 +97,7 @@ header {
 
 nav {
     display: flex;
-    justify-content: space-between; /* Space between the links */
+    justify-content: space-between;
     width: 38rem;
     flex-wrap: nowrap;
     margin: 0;
@@ -169,8 +169,8 @@ main h1{
 
 @media (min-width: 52rem) {
     .container {
-        width: 50rem; /* Limit the width to 50rem */
-        margin-left: calc((100vw - 52rem) / 2); /* Divide remaining space evenly */
+        width: 50rem; /* Set width to 50rem */
+        margin-left: calc((100vw - 52rem) / 2);
         margin-right: calc((100vw - 52rem) / 2);
         padding: 1rem;
     }
