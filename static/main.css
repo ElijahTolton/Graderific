@@ -172,14 +172,14 @@ main h1{
         width: 50rem; /* Limit the width to 50rem */
         margin-left: calc((100vw - 52rem) / 2); /* Divide remaining space evenly */
         margin-right: calc((100vw - 52rem) / 2);
-        padding: 0;
+        padding: 1rem;
     }
 
     .navContainer{
         width: 50rem;
         background-color: #ddd;
-        margin-left: calc((100vw - 56rem) / 2);
-        margin-right: calc((100vw - 56rem) / 2);
+        margin-left: calc((100vw - 52.5rem) / 2);
+        margin-right: calc((100vw - 52.5rem) / 2);
         display: flex;
         justify-content: space-between;
         align-items: center;
