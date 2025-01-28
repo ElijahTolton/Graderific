@@ -2,7 +2,7 @@
 <!-- I am using head and body tags because the live render with
 the live server extsneion doesn't work without them. -->
 <head>
-    <title>Assignment 1 (HTML)</title>
+    <title>Assignment 1 (HTML) submissions</title>
     <link rel="icon" href="/static/favicon.ico">
     <link rel="stylesheet" href="main.css">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Sans&display=swap" rel="stylesheet">
@@ -20,7 +20,7 @@ the live server extsneion doesn't work without them. -->
         </div>
     </header>
 
-    <div class="container">
+    <main class="container">
         <div class="heading">
             <h1>Homework 1 (HTML)</h1>
             <div class="divLine"></div>
@@ -35,29 +35,31 @@ the live server extsneion doesn't work without them. -->
                     <th>Grade</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <!--Submission links will be linked to nothing (#). There are no
-                    submissions to show.-->
-                    <td>s1</td>
-                    <td><a href="#" title="View submission">Submission</a></td>
-                    <td><input type="number" class="grade" min="0" max="100" value="0"></td>
-                </tr>
-                <tr>
-                    <td>s2</td>
-                    <td><a href="#" title="View submission">Submission</a></td>
-                    <td><input type="number" class="grade" min="0" max="100" value="0"></td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td>
-                        <button id="submit">Submit</button>
-                        <a href="assignment.html">Back to assignment</a>
-                    </td>
-                </tr>
-            </tfoot>
+            <form> <!-- Wrap in form becuase of the input might need to be submitted. -->
+                <tbody>
+                    <tr>
+                        <!--Submission links will be linked to nothing (#). There are no
+                        submissions to show.-->
+                        <td>s1</td>
+                        <td><a href="#" title="View submission">Submission</a></td>
+                        <td><input type="number" class="grade" min="0" max="100" value="0"></td>
+                    </tr>
+                    <tr>
+                        <td>s2</td>
+                        <td><a href="#" title="View submission">Submission</a></td>
+                        <td><input type="number" class="grade" min="0" max="100" value="0"></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>
+                            <button id="submit">Submit</button>
+                            <a href="assignment.html">Back to assignment</a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </form>
         </table>
-    </div>
+    </main>
 </body>
 
