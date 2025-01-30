@@ -187,22 +187,15 @@ main h1{
         width: 50rem; /* Set width to 50rem */
         margin-left: calc((100vw - 52rem) / 2);
         margin-right: calc((100vw - 52rem) / 2);
-        padding: 0 1rem 1rem 1rem;
     }
 
     .navContainer{
         width: 50rem;
-        background-color: #ddd;
         margin-left: calc((100vw - 52rem) / 2);
         margin-right: calc((100vw - 52rem) / 2);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: nowrap;
     }
 
     nav{
-        flex-wrap: nowrap;
         margin: 0;
     }
 }
