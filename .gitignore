@@ -4,3 +4,10 @@ db.sqlite3
 .DS_Store
 autotester
 *~
+a.txt
+b.txt
+a1.txt
+b1.txt
+c.txt
+c2.txt
+grades/migrations/0001_initial.py
