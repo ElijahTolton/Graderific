@@ -1,10 +1,12 @@
+{% load static %}
+
 <!DOCTYPE html>
 <!-- I am using head and body tags because the live render with
 the live server extsneion doesn't work without them. -->
 <head>
     <title>Login</title>
     <link rel="icon" href="/static/favicon.ico">
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="{% static 'main.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Sans&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">

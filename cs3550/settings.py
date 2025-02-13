@@ -37,6 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'grades',
+]
+
+# Static files images and CSS
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    'c:/Users/Elijah/source/repos/a2-css-layouts-ElijahTolton/static',
 ]
 
 MIDDLEWARE = [

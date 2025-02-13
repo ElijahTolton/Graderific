@@ -4,14 +4,20 @@ Author: Elijah Tolton
 Professor: Prof. Johnson
 Course: CS 3550
 Date: 1/24/2025
-Repo: https://github.com/University-of-Utah-CS3505/graderific-ElijahTolton
+Repo: https://github.com/University-of-Utah-CS3550/a2-css-layouts-ElijahTolton
 
 #Project overview
 This project is a grading application similar to an application like
 canvas. The beginning of this process is adding basic struture to the webpage
-with HTML. Added CSS to style graderfic webpage.
+with HTML.
 
 1/13/2025
 Finished A1, added basic HTML structure to the grading
 application webpage.
 
+2/1/2025
+Added CSS to style graderfic webpage.
+
+2/12/2025
+Created grades app in django project. Adding to django urls, views, and models.
+Using server to render webpages tied to specific information in the dtaa
