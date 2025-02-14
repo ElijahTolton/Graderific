@@ -16,8 +16,8 @@ the live server extsneion doesn't work without them. -->
         <div class="navContainer">
             <h1>CS 3550</h1>
             <nav>
-                <h2><a href="index.html">Assignments</a></h2>
-                <h2 class="prof"><a href="profile.html">Profile</a></h2>
+                <h2><a href="{% url 'index' %}">Assignments</a></h2>
+                <h2 class="prof"><a href="{% url 'profile' %}">Profile</a></h2>
             </nav>
         </div>
     </header>
@@ -43,7 +43,7 @@ the live server extsneion doesn't work without them. -->
                         <td>{{ assignment.deadline|date:"b d"|capfirst }}</td>
                         <td class="numColumn">{{ assignment.weight }}</td>
                     </tr>
-                {% endfor %}   
+                {% endfor %}
             </tbody>
         </table>
     </main>

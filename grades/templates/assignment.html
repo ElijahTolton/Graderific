@@ -16,36 +16,43 @@ the live server extsneion doesn't work without them. -->
         <div class="navContainer">
             <h1>CS 3550</h1>
             <nav>
-                <h2><a href="index.html">Assignments</a></h2>
-                <h2 class="profile"><a href="profile.html">Profile</a></h2>
+                <h2><a href="{% url 'index' %}">Assignments</a></h2>
+                <h2 class="profile"><a href="{% url 'profile' %}">Profile</a></h2>
             </nav>
         </div>
     </header>
     
     <main class="container">
         <div class="heading">
-            <h1 class="pageTitle">Homework 1 (HTML)</h1>
+            <h1 class="pageTitle">{{assignment.title}}</h1>
             <div class="divLine"></div>
-            <p>Due September 08, total of 100 points</p>
+            {% if assignment.points == 1%}
+                <p>Due {{assignment.deadline|date:"F d" }}, total of {{assignment.points}} point</p>
+            {% else %}
+                <p>Due {{assignment.deadline|date:"F d" }}, total of {{assignment.points}} points</p>
+            {% endif %}
         </div>
         <section class="ActionBox">
-            <p>Currently 2/3 submissions</p>
-            <div class="ActionRow">
-                <p>1 submission assigned to you</p>
-                <p><a href="submissions.html">Grade</a></p>
+            {% if numStudents  == 1 %}
+                <p>Currently {{submissionCount}}/{{numStudents}} submission</p>
+            {% else %}
+                <p>Currently {{submissionCount}}/{{numStudents}} submissions</p>
+            {% endif %}
+
+            <div class = "ActionRow">
+                {% if mySubmissionCt == 1 %}
+                    <p>{{mySubmissionCt}} submission assigned to you</p>
+                {% else %}
+                    <p>{{mySubmissionCt}} submissions assigned to you</p>
+                {% endif %}
+                    <p><a href="/{{assignment.id}}/submissions">Grade</a></p>
             </div>
         </section>
 
         <div>
             <h3 id="description">Description:</h3>
-            <p>In this assignment, you will set up a web server and write HTML for the grading application (Graderific) 
-                that you'll build all semester. Specifically, in this assignment, you will demonstrate that you can:</p>
-            <ul>
-                <li>Configure and start a <em>basic web server</em> using Django</li>
-                <li>Create <em>basic web pages</em> with HTML for data/content</li>
-            </ul>
-            <p>For example, here is the a page <strong>you will make,</strong> in a file called <code>assignments.html:</code></p>
-            <img id="assign" src="/static/assignment.png" alt="Screenshot of assignments page. The page contains a header with a navagation bar in it. There is an action box that current submissions to grade. Undernaeath the action box there is a description of the assignment.">
+            {{assignment.description|safe}}
+            <p></p>
         </div>
     </main>
 </body>

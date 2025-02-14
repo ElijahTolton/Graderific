@@ -20,8 +20,8 @@ from grades import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", views.index),
-    path("profile/", views.profile),
+    path("", views.index, name="index"),
+    path("profile/", views.profile, name="profile"),
     path("<int:assignmentID>/", views.assignment),
     path("<int:assignmentID>/submissions/", views.submissions),
     path("profile/login/", views.login_form),
