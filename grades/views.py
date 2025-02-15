@@ -20,8 +20,9 @@ def index(request):
 def assignment(request, assignmentID):
     currUser = User.objects.get(username='g') # Get the current user
     currAssign = get_object_or_404(models.Assignment, id=assignmentID) # Get the assignment object
-    totSubmissions = currAssign.submission_set.count() # Get the total number of submissions for this assignment
-    myAssignedSubmissionCt = currUser.graded_set.count() # number of submissions assigned to this user
+    submissions = currAssign.submission_set
+    totSubmissions = submissions.count() # Get the total number of submissions for this assignment
+    myAssignedSubmissionCt = currUser.graded_set.filter(assignment=currAssign).count # number of submissions assigned to this user in this assignment
     numStudents = models.Group.objects.get(name="Students").user_set.count() # total number of students
 
     context = {
