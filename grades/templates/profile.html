@@ -12,16 +12,7 @@ the live server extsneion doesn't work without them. -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <header>
-        <div class="navContainer">
-            <h1>CS 3550</h1>
-            <nav>
-                <h2><a href="{% url 'index' %}">Assignments</a></h2>
-                <h2 class="prof"><a href="{% url 'profile' %}">Profile</a></h2>
-            </nav>
-        </div>
-    </header>
-
+    {% include 'header.html' with title=Graderific %}
     <main class="container">
         <div class="heading">
             <h1 class="pageTitle">Your grades</h1>
@@ -30,8 +21,8 @@ the live server extsneion doesn't work without them. -->
         <div class="divLine"></div>
         <section class="ActionBox">
             <div class="ActionRow">
-                <p>Currently logged in as ta1</p>
-                <a role="button" href="login.html">Log out</a>
+                <p>Currently logged in as {{curUser}}</p>
+                <a role="button" href="{% url 'login' %}">Log out</a>
             </div>
         </section>
 
@@ -43,36 +34,14 @@ the live server extsneion doesn't work without them. -->
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <!--I linked all the assignments on profile.hmtl to the submission page.
-                    I assume that we will eventually add other assignment submission forms.-->
-                    <td><a href="submissions.html" title="View submissions">Github username</a></td>
-                    <td class="numColumn">1/3</td>
-                </tr>
-                <tr>
-                    <td><a href="submissions.html" title="View submissions">Homework 1(HTML)</a></td>
-                    <td class="numColumn">1/2</td>
-                </tr>
-                <tr>
-                    <td><a href="submissions.html" title="View submissions">Homework 2(CSS)</a></td>
-                    <td class="numColumn">0/1</td>
-                </tr>
-                <tr>
-                    <td><a href="submissions.html" title="View submissions">Homework 3(backend)</a></td>
-                    <td class="numColumn">0/0</td>
-                </tr>
-                <tr>
-                    <td><a href="submissions.html" title="View submissions">Homework 4(Deploy)</a></td>
-                    <td class="numColumn">0/0</td>
-                </tr>
-                <tr>
-                    <td><a href="submissions.html" title="View submissions">Homework 5(Permissions)</a></td>
-                    <td class="numColumn">0/0</td>
-                </tr>
-                <tr>
-                    <td><a href="submissions.html" title="View submissions">Homework 6(JS)</a></td>
-                    <td class="numColumn">0/0</td>
-                </tr>   
+                {% for assignment in assignments %}
+                    <tr>
+                        <td><a href="/{{ assignment.id }}/submissions/" title="View submissions">{{ assignment.title }}</a></td>
+                        <td class="numColumn">
+                            {{ assignment.gradedSubmissions }} / {{ assignment.totalSubmissions}}
+                        </td>
+                    </tr>
+                {% endfor %} 
             </tbody>
         </table>
     </main>

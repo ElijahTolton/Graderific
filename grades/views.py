@@ -2,6 +2,7 @@ from django.shortcuts import render
 from . import models
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from django.db.models import Count, Q
 
 
 # Create your views here.
@@ -33,10 +34,31 @@ def assignment(request, assignmentID):
     return render(request, "assignment.html", context)
 
 def submissions(request, assignmentID):
-    return render(request, "submissions.html")
+    currUser = User.objects.get(username='g') # Get the current user
+    currAssign = models.Assignment.objects.get(id=assignmentID)
+    submissions = currAssign.submission_set.filter(grader=currUser).order_by('author__username')
+
+    context = {
+        "user" : currUser,
+        "assignment" : currAssign,
+        "submissions" : submissions,
+    }
+    
+    return render(request, "submissions.html", context)
 
 def profile(request):
-    return render(request, "profile.html")
+    currUser = User.objects.get(username='g') # Get the current user
+    assignmentList = models.Assignment.objects.annotate(
+        totalSubmissions=Count('submission', filter=Q(submission__grader=currUser)),
+        gradedSubmissions=Count('submission', filter=Q(submission__grader=currUser, submission__score__isnull=False)),
+    )
+
+    context = {
+        "curUser" : currUser,
+        "assignments" : assignmentList,
+    }
+
+    return render(request, "profile.html", context)
 
 def login_form(request):
     return render(request, "login.html")

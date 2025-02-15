@@ -12,21 +12,12 @@ the live server extsneion doesn't work without them. -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <header>
-        <div class="navContainer">
-            <h1>CS 3550</h1>
-            <nav>
-                <h2><a href="{% url 'index' %}">Assignments</a></h2>
-                <h2 class="prof"><a href="{% url 'profile' %}">Profile</a></h2>
-            </nav>
-        </div>
-    </header>
-
+    {% include 'header.html' with title=Graderific %}
     <main class="container">
         <div class="heading">
-            <h1 class="pageTitle">Homework 1 (HTML)</h1>
+            <h1 class="pageTitle">{{assignment.title}}</h1>
             <div class="divLine"></div>
-            <p>All grades out of 100</p>
+            <p>All grades out of {{assignment.points}}</p>
         </div>
 
         <table>
@@ -39,24 +30,20 @@ the live server extsneion doesn't work without them. -->
             </thead>
             <form> <!-- Wrap in form becuase of the input might need to be submitted. -->
                 <tbody>
+                    
+                    {% for submission in submissions %}
                     <tr>
-                        <!--Submission links will be linked to nothing (#). There are no
-                        submissions to show.-->
-                        <td>s1</td>
-                        <td><a href="#" title="View submission">Submission</a></td>
-                        <td><input type="number" class="grade" min="0" max="100" value="0"></td>
+                        <td>{{submission.author.get_full_name}}</td>
+                        <td><a href="file.url" title="View submission">Submission</a></td>
+                        <td><input type="number" class="grade" min="0" max="{{assignment.points}}" value="{{submission.score}}"></td>
                     </tr>
-                    <tr>
-                        <td>s2</td>
-                        <td><a href="#" title="View submission">Submission</a></td>
-                        <td><input type="number" class="grade" min="0" max="100" value="0"></td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
                 <tfoot>
                     <tr>
                         <td>
                             <button id="submit">Submit</button>
-                            <a href="assignment.html">Back to assignment</a>
+                            <a href="{% url 'assignment' assignment.id %}">Back to assignment</a>
                         </td>
                     </tr>
                 </tfoot>
