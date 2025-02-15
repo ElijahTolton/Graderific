@@ -16,8 +16,12 @@ Finished A1, added basic HTML structure to the grading
 application webpage.
 
 2/1/2025
-Added CSS to style graderfic webpage.
+A2. Added CSS to style graderfic webpage.
 
 2/12/2025
 Created grades app in django project. Adding to django urls, views, and models.
 Using server to render webpages tied to specific information in the dtaa
+
+2/15/2025
+Made all pages dynamic depending on what user is logged in and what
+information is stred int he database. Finished A3.
