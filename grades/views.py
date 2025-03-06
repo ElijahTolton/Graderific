@@ -42,11 +42,11 @@ def submissions(request, assignmentID):
         grades = processGrades(request.POST, errors)
         for subID, grade in grades.items():
             try:
-                submission = models.Submission.objects.get(id=subID)
+                submission = models.Submission.objects.get(id=subID, assignment=currAssign)
                 if grade == "":
                     submission.score = None
                     submission.save()
-                elif (int(grade) < 0 or int(grade) > currAssign.points):
+                elif (grade < 0 or grade > currAssign.points):
                     # Check that the grade is within the bounds
                     errors[subID] = f"Grade must be between 0 and {currAssign.points}"
                 else:
@@ -81,12 +81,13 @@ def processGrades( updatedGrades , errors):
                 # Ensure only numbers are entered as grades
                 try:
                     gradeNum = float(grade)
-                    gradeNum = int(grade)
+                    gradeNum = int(gradeNum)
                     print(gradeNum)
                     grades[subID] = gradeNum
                     print(grades[subID])
-                except:
+                except Exception as e:
                     errors[subID] = "Grade must be a number"
+                    print(f"Error processing grade for submission ID {subID}: {e}")
     return grades
 
 def profile(request):

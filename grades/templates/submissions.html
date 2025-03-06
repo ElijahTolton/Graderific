@@ -36,15 +36,6 @@ the live server extsneion doesn't work without them. -->
                         <td>{{submission.author.get_full_name}}</td>
                         <td><a href="file.url" title="View submission">Submission</a></td>
                         <td><input name="grade-{{submission.id}}" type="number" class="grade" min="0" max="{{assignment.points}}" value="{{submission.score}}"></td>
-                        <td>
-                            {% if errors %}
-                                {% for subId, errMessage in errors.items %}
-                                    {% if sub_id == submission.id %}
-                                        <output>{{errMessage}}</output>
-                                    {% endif %}
-                                {% endfor %}
-                            {% endif %}
-                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -54,6 +45,13 @@ the live server extsneion doesn't work without them. -->
                             <button id="submit">Submit</button>
                             <a href="{% url 'assignment' assignment.id %}">Back to assignment</a>
                         </td>
+                        {% if errors %}
+                            <td>
+                            {% for subId, errMessage in errors.items %}
+                                <output>{{ errMessage }}</output>
+                            {% endfor %}
+                            </td>
+                        {% endif %}
                     </tr>
                 </tfoot>
             </form>

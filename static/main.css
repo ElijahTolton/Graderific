@@ -199,4 +199,8 @@ main h1{
         margin: 0;
     }
 }
-    
+
+/* Styling for Assignment 4 */
+output {
+    color: red;
+}
