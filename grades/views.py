@@ -35,36 +35,53 @@ def assignment(request, assignmentID):
     return render(request, "assignment.html", context)
 
 def submissions(request, assignmentID):
+    currAssign = models.Assignment.objects.get(id=assignmentID)
+    errors = {}
+
     if request.method == "POST":
-        grades = processGrades(request.POST)
+        grades = processGrades(request.POST, errors)
         for subID, grade in grades.items():
-            submission = models.Submission.objects.get(id=subID)
-            if grade is None:
-                submission.score = ""    
-            else:
-                submission.score = grade
-            submission.save()
-        return redirect(f"/{assignmentID}/submissions/")
+            try:
+                submission = models.Submission.objects.get(id=subID)
+                if grade == "":
+                    submission.score = None
+                    submission.save()
+                elif (int(grade) < 0 or int(grade) > currAssign.points):
+                    # Check that the grade is within the bounds
+                    errors[subID] = f"Grade must be between 0 and {currAssign.points}"
+                else:
+                    submission.score = int(grade)
+                    submission.save()
+            except:
+                errors[subID] = "Submission does not exist or is not part of this assignment."
 
     currUser = User.objects.get(username='g') # Get the current user
-    currAssign = models.Assignment.objects.get(id=assignmentID)
     submissions = currAssign.submission_set.filter(grader=currUser).order_by('author__username')
 
     context = {
         "user" : currUser,
         "assignment" : currAssign,
         "submissions" : submissions,
+        "errors" : errors
     }
+
+    for id, error in errors.items():
+        print(f"{id}: {error}" )
     
     return render(request, "submissions.html", context)
 
-def processGrades( updatedGrades ):
+def processGrades( updatedGrades , errors):
     grades = {}
     for submission in updatedGrades:
         # Skip any keys that don't start with grade-
         if submission.startswith("grade-"):
             subID = int(submission.removeprefix("grade-"))
-            grades[subID] = updatedGrades[submission]
+            grade = updatedGrades[submission]
+            if grade.isdigit() or grade == "":
+                grades[subID] = grade
+            else:
+                # Ensure only numbers are entered as grades
+                errors[subID] = "Grade must be a number"
     return grades
 
 def profile(request):
