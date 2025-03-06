@@ -28,9 +28,9 @@ the live server extsneion doesn't work without them. -->
                     <th>Grade</th>
                 </tr>
             </thead>
-            <form> <!-- Wrap in form becuase of the input might need to be submitted. -->
+            <form action="/{{ assignment.id }}/submissions/" method="post"> <!-- Wrap in form becuase of the input might need to be submitted. -->
+                {% csrf_token %}
                 <tbody>
-                    
                     {% for submission in submissions %}
                     <tr>
                         <td>{{submission.author.get_full_name}}</td>

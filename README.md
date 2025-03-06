@@ -25,3 +25,7 @@ Using server to render webpages tied to specific information in the dtaa
 2/15/2025
 Made all pages dynamic depending on what user is logged in and what
 information is stred int he database. Finished A3.
+
+3/5/2025
+Started A4 forms and controllers. Implementing POST actions into the webpage and
+more interative components.

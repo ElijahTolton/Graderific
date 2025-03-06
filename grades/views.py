@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from . import models
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
@@ -35,6 +35,9 @@ def assignment(request, assignmentID):
     return render(request, "assignment.html", context)
 
 def submissions(request, assignmentID):
+    if request.method == "POST":
+        return redirect(f"/{assignmentID}/submissions/")
+
     currUser = User.objects.get(username='g') # Get the current user
     currAssign = models.Assignment.objects.get(id=assignmentID)
     submissions = currAssign.submission_set.filter(grader=currUser).order_by('author__username')
