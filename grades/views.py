@@ -36,6 +36,14 @@ def assignment(request, assignmentID):
 
 def submissions(request, assignmentID):
     if request.method == "POST":
+        grades = processGrades(request.POST)
+        for subID, grade in grades.items():
+            submission = models.Submission.objects.get(id=subID)
+            if grade is None:
+                submission.score = ""    
+            else:
+                submission.score = grade
+            submission.save()
         return redirect(f"/{assignmentID}/submissions/")
 
     currUser = User.objects.get(username='g') # Get the current user
@@ -49,6 +57,15 @@ def submissions(request, assignmentID):
     }
     
     return render(request, "submissions.html", context)
+
+def processGrades( updatedGrades ):
+    grades = {}
+    for submission in updatedGrades:
+        # Skip any keys that don't start with grade-
+        if submission.startswith("grade-"):
+            subID = int(submission.removeprefix("grade-"))
+            grades[subID] = updatedGrades[submission]
+    return grades
 
 def profile(request):
     currUser = User.objects.get(username='g') # Get the current user
