@@ -77,11 +77,16 @@ def processGrades( updatedGrades , errors):
         if submission.startswith("grade-"):
             subID = int(submission.removeprefix("grade-"))
             grade = updatedGrades[submission]
-            if grade.isdigit() or grade == "":
-                grades[subID] = grade
-            else:
+            if grade != "":
                 # Ensure only numbers are entered as grades
-                errors[subID] = "Grade must be a number"
+                try:
+                    gradeNum = float(grade)
+                    gradeNum = int(grade)
+                    print(gradeNum)
+                    grades[subID] = gradeNum
+                    print(grades[subID])
+                except:
+                    errors[subID] = "Grade must be a number"
     return grades
 
 def profile(request):
