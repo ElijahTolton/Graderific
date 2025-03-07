@@ -39,12 +39,15 @@ def submissions(request, assignmentID):
     errors = {}
 
     if request.method == "POST":
+        # get all changed grades and associate them with a submission ID
         grades = processGrades(request.POST, errors)
         for subID, grade in grades.items():
             try:
+                # If it is a valid submission update the value, otherwise add to errors map
                 submission = models.Submission.objects.get(id=subID, assignment=currAssign)
-                if grade == "":
+                if grade == None:
                     submission.score = None
+                    print("Grade is empty string")
                     submission.save()
                 elif (grade < 0 or grade > currAssign.points):
                     # Check that the grade is within the bounds
@@ -77,17 +80,16 @@ def processGrades( updatedGrades , errors):
         if submission.startswith("grade-"):
             subID = int(submission.removeprefix("grade-"))
             grade = updatedGrades[submission]
-            if grade != "":
+            if grade == "":
+                grades[subID] = None
+            else:
                 # Ensure only numbers are entered as grades
                 try:
                     gradeNum = float(grade)
                     gradeNum = int(gradeNum)
-                    print(gradeNum)
                     grades[subID] = gradeNum
-                    print(grades[subID])
                 except Exception as e:
                     errors[subID] = "Grade must be a number"
-                    print(f"Error processing grade for submission ID {subID}: {e}")
     return grades
 
 def profile(request):

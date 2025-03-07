@@ -200,7 +200,11 @@ main h1{
     }
 }
 
-/* Styling for Assignment 4 */
+/* Homework 4 changes here */
 output {
     color: red;
+}
+
+input:invalid {
+    border: 2px solid red;
 }
