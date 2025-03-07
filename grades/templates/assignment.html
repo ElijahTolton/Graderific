@@ -23,6 +23,21 @@ the live server extsneion doesn't work without them. -->
                 <p>Due {{assignment.deadline|date:"F d" }}, total of {{assignment.points}} points</p>
             {% endif %}
         </div>
+
+        <section class="ActionBox">
+            {% if aliceSub is None %}
+                <p>No current submission</p>
+            {% else %}
+                <p>Current submission: <a href="#">{{aliceSub.file.name}}</a></p>
+            {% endif %}
+
+            <form action="/{{ assignment.id }}/" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="file">
+                <button id="submit">Submit</button>
+            </form>
+        </section>
+
         <section class="ActionBox">
             {% if numStudents  == 1 %}
                 <p>Currently {{submissionCount}}/{{numStudents}} submission</p>

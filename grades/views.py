@@ -25,11 +25,31 @@ def assignment(request, assignmentID):
     myAssignedSubmissionCt = currUser.graded_set.filter(assignment=currAssign).count # number of submissions assigned to this user in this assignment
     numStudents = models.Group.objects.get(name="Students").user_set.count() # total number of students
 
+    # Display alices algorithmer student submission view for each assignment
+    alice = User.objects.get(username='a')  # Get Alice Algorithm
+    try:
+        aliceSubmission = models.Submission.objects.filter(assignment=currAssign, author=alice).last()
+    except:
+        aliceSubmission = None
+    
+    print("hello")
+    if request.method == "POST" and 'file' in request.FILES:
+        fileSub = request.FILES['file']
+        print("IN method post")
+        
+        if aliceSubmission is not None:
+            aliceSubmission.file = fileSub
+            aliceSubmission.save()
+        else:
+            models.Submission.objects.create(assignment=currAssign, author=alice, file=fileSub, score=None, grader=currUser)
+        return redirect(f"/{assignmentID}/")
+
     context = {
         "submissionCount" : totSubmissions,
         "mySubmissionCt" : myAssignedSubmissionCt,
         "numStudents" : numStudents,
         "assignment" : currAssign,
+        "aliceSub" : aliceSubmission,
     }
 
     return render(request, "assignment.html", context)
@@ -67,9 +87,6 @@ def submissions(request, assignmentID):
         "submissions" : submissions,
         "errors" : errors
     }
-
-    for id, error in errors.items():
-        print(f"{id}: {error}" )
     
     return render(request, "submissions.html", context)
 
