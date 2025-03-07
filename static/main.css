@@ -203,6 +203,7 @@ main h1{
 /* Homework 4 changes here */
 output {
     color: red;
+    font-weight: bold;
 }
 
 input:invalid {

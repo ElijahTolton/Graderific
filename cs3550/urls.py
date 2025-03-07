@@ -25,4 +25,5 @@ urlpatterns = [
     path("<int:assignmentID>/", views.assignment, name="assignment"),
     path("<int:assignmentID>/submissions/", views.submissions),
     path("profile/login/", views.login_form, name="login"),
+    path('uploads/<str:filename>', views.show_upload),
 ]

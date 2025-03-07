@@ -4,7 +4,7 @@
 <!-- I am using head and body tags because the live render with
 the live server extsneion doesn't work without them. -->
 <head>
-    <title>Assignment 1 (HTML) submissions</title>
+    <title>Submissions</title>
     <link rel="icon" href="/static/favicon.ico">
     <link rel="stylesheet" href="{% static 'main.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Sans&display=swap" rel="stylesheet">
@@ -34,7 +34,7 @@ the live server extsneion doesn't work without them. -->
                     {% for submission in submissions %}
                     <tr>
                         <td>{{submission.author.get_full_name}}</td>
-                        <td><a href="file.url" title="View submission">Submission</a></td>
+                        <td><a href="{{ submission.file.url }}" title="View submission">Submission</a></td>
                         <td><input name="grade-{{submission.id}}" type="number" class="grade" min="0" step="1" max="{{assignment.points}}" value="{{submission.score}}"></td>
                     </tr>
                     {% endfor %}

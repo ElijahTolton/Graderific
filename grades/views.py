@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from . import models
 from django.contrib.auth.models import User
@@ -7,7 +8,6 @@ from django.db.models import Count, Q
 
 # Create your views here.
 
-# Handle HTTP requests for static webpages.
 def index(request):
     assignmentList = models.Assignment.objects.all()
 
@@ -32,10 +32,8 @@ def assignment(request, assignmentID):
     except:
         aliceSubmission = None
     
-    print("hello")
     if request.method == "POST" and 'file' in request.FILES:
         fileSub = request.FILES['file']
-        print("IN method post")
         
         if aliceSubmission is not None:
             aliceSubmission.file = fileSub
@@ -67,7 +65,6 @@ def submissions(request, assignmentID):
                 submission = models.Submission.objects.get(id=subID, assignment=currAssign)
                 if grade == None:
                     submission.score = None
-                    print("Grade is empty string")
                     submission.save()
                 elif (grade < 0 or grade > currAssign.points):
                     # Check that the grade is within the bounds
@@ -125,3 +122,8 @@ def profile(request):
 
 def login_form(request):
     return render(request, "login.html")
+
+# Show file submisisons in the browser
+def show_upload(request, filename):
+    submission = models.Submission.objects.get(file__endswith=filename)
+    return HttpResponse(submission.file.open())

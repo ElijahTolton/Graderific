@@ -28,7 +28,7 @@ the live server extsneion doesn't work without them. -->
             {% if aliceSub is None %}
                 <p>No current submission</p>
             {% else %}
-                <p>Current submission: <a href="#">{{aliceSub.file.name}}</a></p>
+                <p>Current submission: <a href="{{ aliceSub.file.url }}">{{aliceSub.file.name}}</a></p>
             {% endif %}
 
             <form action="/{{ assignment.id }}/" method="post" enctype="multipart/form-data">
