@@ -24,36 +24,44 @@ the live server extsneion doesn't work without them. -->
             {% endif %}
         </div>
 
-        <section class="ActionBox">
-            {% if aliceSub is None %}
-                <p>No current submission</p>
-            {% else %}
-                <p>Current submission: <a href="{{ aliceSub.file.url }}">{{aliceSub.file.name}}</a></p>
-            {% endif %}
-
-            <form action="/{{ assignment.id }}/" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <input type="file" name="file">
-                <button id="submit">Submit</button>
-            </form>
-        </section>
-
-        <section class="ActionBox">
-            {% if numStudents  == 1 %}
-                <p>Currently {{submissionCount}}/{{numStudents}} submission</p>
-            {% else %}
-                <p>Currently {{submissionCount}}/{{numStudents}} submissions</p>
-            {% endif %}
-
-            <div class = "ActionRow">
-                {% if mySubmissionCt == 1 %}
-                    <p>{{mySubmissionCt}} submission assigned to you</p>
+        {% if student  or loggedOut %}
+            <section class="ActionBox">
+                {% if userSub is None %}
+                    <p>No current submission</p>
                 {% else %}
-                    <p>{{mySubmissionCt}} submissions assigned to you</p>
+                    <p>Current submission: <a href="{{ userSub.file.url }}">{{userSub.file.name}}</a></p>
                 {% endif %}
+
+                <form action="/{{ assignment.id }}/" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" name="file">
+                    <button id="submit">Submit</button>
+                </form>
+            </section>
+        {% endif %}
+        
+        {% if ta or superUser %}
+            <section class="ActionBox">
+                {% if numStudents  == 1 %}
+                    <p>Currently {{submissionCount}}/{{numStudents}} submission</p>
+                {% else %}
+                    <p>Currently {{submissionCount}}/{{numStudents}} submissions</p>
+                {% endif %}
+
+                <div class = "ActionRow">
+                    {% if superUser %}
+                        <p>{{mySubmissionCt}} total submission{{ mySubmissionCt|pluralize }}</p>
+                    {% else %}
+                        {% if mySubmissionCt == 1 %}
+                            <p>{{mySubmissionCt}} submission assigned to you</p>
+                        {% else %}
+                            <p>{{mySubmissionCt}} submissions assigned to you</p>
+                        {% endif %}
+                    {% endif %}
                     <p><a href="/{{assignment.id}}/submissions">Grade</a></p>
-            </div>
-        </section>
+                </div>
+            </section>
+        {% endif %}
 
         <div>
             <h3 id="description">Description:</h3>

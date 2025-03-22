@@ -18,36 +18,60 @@ def index(request):
     return render(request, "index.html", context)
 
 def assignment(request, assignmentID):
-    currUser = User.objects.get(username='g') # Get the current user
+    currUser = request.user # Get the current user
     currAssign = get_object_or_404(models.Assignment, id=assignmentID) # Get the assignment object
     submissions = currAssign.submission_set
     totSubmissions = submissions.count() # Get the total number of submissions for this assignment
-    myAssignedSubmissionCt = currUser.graded_set.filter(assignment=currAssign).count # number of submissions assigned to this user in this assignment
-    numStudents = models.Group.objects.get(name="Students").user_set.count() # total number of students
+    myAssignedSubmissionCt = 1
+    numStudents = 1
+    userSubmission = None
 
-    # Display alices algorithmer student submission view for each assignment
-    alice = User.objects.get(username='a')  # Get Alice Algorithm
-    try:
-        aliceSubmission = models.Submission.objects.filter(assignment=currAssign, author=alice).last()
-    except:
-        aliceSubmission = None
-    
+    # Determine the type of the user
+    isStudent = currUser.groups.filter(name="Students").exists()
+    isTa = currUser.groups.filter(name="Teaching Assistants").exists()
+    isAnonymous = not currUser.is_authenticated
+    print(isAnonymous)
+    isAdmin = currUser.is_superuser
+
+    if isStudent:
+        try:
+            userSubmission = models.Submission.objects.filter(assignment=currAssign, author=currUser).last()
+        except:
+            userSubmission = None
+            myAssignedSubmissionCt = 0
+    elif isAnonymous:
+        userSubmission = None
+        myAssignedSubmissionCt = 0
+    elif isTa:
+        myAssignedSubmissionCt = currUser.graded_set.filter(assignment=currAssign).count # number of submissions assigned to this user in this assignment
+        numStudents = models.Group.objects.get(name="Students").user_set.count() # total number of students
+    else:
+        # This is the superuser
+        numStudents = models.Group.objects.get(name="Students").user_set.count() # total number of students
+        userSubmission = None
+        myAssignedSubmissionCt = totSubmissions
+
     if request.method == "POST" and 'file' in request.FILES:
-        fileSub = request.FILES['file']
-        
-        if aliceSubmission is not None:
-            aliceSubmission.file = fileSub
-            aliceSubmission.save()
-        else:
-            models.Submission.objects.create(assignment=currAssign, author=alice, file=fileSub, score=None, grader=currUser)
-        return redirect(f"/{assignmentID}/")
+        if isStudent:
+            fileSub = request.FILES['file']
+            
+            if userSubmission is not None:
+                userSubmission.file = fileSub
+                userSubmission.save()
+            else:
+                models.Submission.objects.create(assignment=currAssign, author=currUser, file=fileSub, score=None, grader=None)
+            return redirect(f"/{assignmentID}/")
 
     context = {
         "submissionCount" : totSubmissions,
         "mySubmissionCt" : myAssignedSubmissionCt,
         "numStudents" : numStudents,
         "assignment" : currAssign,
-        "aliceSub" : aliceSubmission,
+        "userSub" : userSubmission,
+        "student" : isStudent,
+        "ta" : isTa,
+        "loggedOut" :isAnonymous,
+        "superUser" : isAdmin,
     }
 
     return render(request, "assignment.html", context)
@@ -75,8 +99,11 @@ def submissions(request, assignmentID):
             except:
                 errors[subID] = "Submission does not exist or is not part of this assignment."
 
-    currUser = User.objects.get(username='g') # Get the current user
-    submissions = currAssign.submission_set.filter(grader=currUser).order_by('author__username')
+    currUser = request.user # Get the current user
+    if currUser.is_superuser:
+        submissions = currAssign.submission_set.all()
+    else:
+        submissions = currAssign.submission_set.filter(grader=currUser).order_by('author__username')
 
     context = {
         "user" : currUser,
@@ -109,7 +136,7 @@ def processGrades( updatedGrades , errors):
 def profile(request):
     currUser = request.user # Get the current user
 
-    if currUser.is_anonymous:
+    if not currUser.is_authenticated:
         return redirect("/profile/login")
         
     assignmentList = models.Assignment.objects.annotate(
@@ -143,8 +170,6 @@ def login_form(request):
 def logout_form(request):
     logout(request)
     return render(request, "login.html")
-
-
 
 # Show file submisisons in the browser
 def show_upload(request, filename):
