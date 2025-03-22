@@ -21,8 +21,8 @@ the live server extsneion doesn't work without them. -->
         <div class="divLine"></div>
         <section class="ActionBox">
             <div class="ActionRow">
-                <p>Currently logged in as {{curUser}}</p>
-                <a role="button" href="{% url 'login' %}">Log out</a>
+                <p>Currently logged in as {{curUser.get_full_name}}</p>
+                <a role="button" href="logout/">Log out</a>
             </div>
         </section>
 

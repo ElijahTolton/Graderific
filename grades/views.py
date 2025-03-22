@@ -4,7 +4,7 @@ from . import models
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
-
+from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
 
@@ -107,7 +107,11 @@ def processGrades( updatedGrades , errors):
     return grades
 
 def profile(request):
-    currUser = User.objects.get(username='g') # Get the current user
+    currUser = request.user # Get the current user
+
+    if currUser.is_anonymous:
+        return redirect("/profile/login")
+        
     assignmentList = models.Assignment.objects.annotate(
         totalSubmissions=Count('submission', filter=Q(submission__grader=currUser)),
         gradedSubmissions=Count('submission', filter=Q(submission__grader=currUser, submission__score__isnull=False)),
@@ -121,7 +125,26 @@ def profile(request):
     return render(request, "profile.html", context)
 
 def login_form(request):
+
+    if request.method == "POST":
+        loginInfo = request.POST
+        user = loginInfo.get("user", "")
+        passWord = loginInfo.get("pass", "")
+        user = authenticate(username=user, password=passWord)
+        if user is not None:
+            login(request, user)
+            return redirect("/profile/")
+        else:
+            print("Athuntificatio failed")
+            return render(request, "login.html", {"error": "Invalid username or password"})
+
     return render(request, "login.html")
+
+def logout_form(request):
+    logout(request)
+    return render(request, "login.html")
+
+
 
 # Show file submisisons in the browser
 def show_upload(request, filename):

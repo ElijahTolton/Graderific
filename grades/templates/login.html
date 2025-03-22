@@ -18,16 +18,20 @@ the live server extsneion doesn't work without them. -->
             <h1 class="pageTitle">Log in</h1>
             <div class="divLine"></div>
         </div>
-        <form>
+        <form method="POST" action="/profile/login/">
+            {% csrf_token %}
             <div class="inputRow">
-                <label for="user">Username:</label><input autofocus id="user" type="text">
+                <label for="user">Username:</label><input name="user" autofocus id="user" type="text">
             </div>
             <div class="inputRow">
-                <label for="pass">Password:</label><input id="pass" type="password">
+                <label for="pass">Password:</label><input name="pass" id="pass" type="password">
             </div>
             <div class="buttonRow">
                 <button>Log in</button>
             </div>
+            {% if error %}
+                <p id="error">{{error}}<p>
+            {% endif %}
         </form>
     </main>
 </body>

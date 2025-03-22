@@ -209,3 +209,8 @@ output {
 input:invalid {
     border: 2px solid red;
 }
+
+/* Homework 5 changes */
+#error{
+    color: red;
+}
