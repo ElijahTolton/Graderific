@@ -30,3 +30,8 @@ information is stred int he database. Finished A3.
 Started A4 forms and controllers. Implementing POST actions into the webpage and
 more interative components. Added code to submit files with input files and also update
 grades with method=post in the input forms.
+
+3/22/2025
+Finished A5. Authentication and Authorization. This assingment I implemented login security,
+computing grades, protection from unauthorized user from accessing views and only
+allowing pdf submissions
