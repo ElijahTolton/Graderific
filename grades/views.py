@@ -7,9 +7,13 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
 from django.contrib.auth import authenticate, login, logout
 from django.utils.timezone import now
+from django.contrib.auth.decorators import login_required
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.core.exceptions import PermissionDenied
 
 # Create your views here.
 
+@login_required
 def index(request):
     assignmentList = models.Assignment.objects.all()
 
@@ -19,6 +23,7 @@ def index(request):
 
     return render(request, "index.html", context)
 
+@login_required
 def assignment(request, assignmentID):
     currUser = request.user # Get the current user
     currAssign = get_object_or_404(models.Assignment, id=assignmentID) # Get the assignment object
@@ -100,9 +105,11 @@ def assignment(request, assignmentID):
 
     return render(request, "assignment.html", context)
 
+@login_required
 def submissions(request, assignmentID):
     currAssign = models.Assignment.objects.get(id=assignmentID)
     errors = {}
+    currUser = request.user # Get the current user
 
     if request.method == "POST":
         # get all changed grades and associate them with a submission ID
@@ -112,22 +119,27 @@ def submissions(request, assignmentID):
                 # If it is a valid submission update the value, otherwise add to errors map
                 submission = models.Submission.objects.get(id=subID, assignment=currAssign)
                 if grade == None:
-                    submission.score = None
+                    submission.changedGrade(currUser, None)
                     submission.save()
                 elif (grade < 0 or grade > currAssign.points):
                     # Check that the grade is within the bounds
                     errors[subID] = f"Grade must be between 0 and {currAssign.points}"
                 else:
-                    submission.score = int(grade)
+                    submission.changedGrade(currUser, int(grade))
                     submission.save()
-            except:
+            except Exception as e:
+                print(f"Error processing submission {subID}: {e}")
                 errors[subID] = "Submission does not exist or is not part of this assignment."
 
-    currUser = request.user # Get the current user
     if currUser.is_superuser:
         submissions = currAssign.submission_set.all()
     else:
         submissions = currAssign.submission_set.filter(grader=currUser).order_by('author__username')
+
+    # Ensure that the current user is a ta
+    isTa = currUser.groups.filter(name="Teaching Assistants").exists()
+    if not isTa and not currUser.is_superuser:
+        raise PermissionDenied("You do not have permission to access this page.")
 
     context = {
         "user" : currUser,
@@ -157,12 +169,10 @@ def processGrades( updatedGrades , errors):
                     errors[subID] = "Grade must be a number"
     return grades
 
+@login_required
 def profile(request):
     currUser = request.user # Get the current user
 
-    if not currUser.is_authenticated:
-        return redirect("/profile/login")
-    
     isStudent = currUser.groups.filter(name="Students").exists()
     finalGrade = 0
     
@@ -226,25 +236,37 @@ def profile(request):
     return render(request, "profile.html", context)
 
 def login_form(request):
+    next = request.GET.get("next", "/profile/")
+    print(next)
 
     if request.method == "POST":
         loginInfo = request.POST
         user = loginInfo.get("user", "")
         passWord = loginInfo.get("pass", "")
+        next = loginInfo.get("next", "/profile/")
+
+        # Authenticate the user
         user = authenticate(username=user, password=passWord)
         if user is not None:
             login(request, user)
-            return redirect("/profile/")
         else:
-            return render(request, "login.html", {"error": "Invalid username or password"})
+            error = {"error" :"Username and password do not match"}
+            return render(request, "login.html", error)
 
-    return render(request, "login.html")
+        # Ensure that redirect is from our own server
+        if url_has_allowed_host_and_scheme(next, None):
+            return redirect(next)
+        else:
+            return redirect("/")
+
+    return render(request, "login.html", context = {"next" : next})
 
 def logout_form(request):
     logout(request)
-    return render(request, "login.html")
+    return redirect("login")
 
 # Show file submisisons in the browser
+@login_required
 def show_upload(request, filename):
     submission = models.Submission.objects.get(file__endswith=filename)
     return HttpResponse(submission.file.open())

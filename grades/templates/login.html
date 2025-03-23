@@ -20,6 +20,7 @@ the live server extsneion doesn't work without them. -->
         </div>
         <form method="POST" action="/profile/login/">
             {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
             <div class="inputRow">
                 <label for="user">Username:</label><input name="user" autofocus id="user" type="text">
             </div>
@@ -30,7 +31,7 @@ the live server extsneion doesn't work without them. -->
                 <button>Log in</button>
             </div>
             {% if error %}
-                <p id="error">{{error}}<p>
+                <output>{{error}}<output>
             {% endif %}
         </form>
     </main>

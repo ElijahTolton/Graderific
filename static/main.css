@@ -211,9 +211,6 @@ input:invalid {
 }
 
 /* Homework 5 changes */
-#error{
-    color: red;
-}
 
 tfoot{
     font-weight: bold;

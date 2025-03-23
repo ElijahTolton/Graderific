@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 from datetime import datetime
+from django.core.exceptions import PermissionDenied
 
 # Create your models here.
 
@@ -25,3 +26,11 @@ class Submission(models.Model):
 
     def __str__(self):
         return f"{self.assignment.title} by {self.author.username}"
+    
+    # Define the security policy in one place
+    def changedGrade(self, user, grade):
+        if user.groups.filter(name="Teaching Assistants").exists() or user.is_superuser:
+            self.score = grade
+            print("hello")
+        else:
+            raise PermissionDenied("You do not have premission to change grades")
