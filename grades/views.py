@@ -10,6 +10,7 @@ from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.core.exceptions import PermissionDenied
+from django.http import Http404
 
 # Create your views here.
 
@@ -34,6 +35,7 @@ def assignment(request, assignmentID):
     userSubmission = None
     submissionStatus = ""
     percentageGrade = 0
+    errorMsg = ""
 
     # Determine the type of the user
     isStudent = currUser.groups.filter(name="Students").exists()
@@ -76,17 +78,26 @@ def assignment(request, assignmentID):
     if request.method == "POST" and 'file' in request.FILES:
         if isStudent:
             fileSub = request.FILES['file']
-            
-            if userSubmission is not None:
-                if currAssign.deadline < now():
-                    return HttpResponseBadRequest("Submission deadline has passed. You cannot update your submission.")
-                else:
-                    userSubmission.file = fileSub
-                    userSubmission.save()
+
+            # Limit file size submission to 64 MiB
+            sizeLimit = 64 * 1024 * 1024
+            if fileSub.size > sizeLimit:
+                errorMsg = "The submitted file must be less than 64 Mib"
+            elif not fileSub.name.lower().endswith(".pdf"):
+                errorMsg = "Please upload a valid PDF file."
+            elif not next(fileSub.chunks(), b"").startswith(b"%PDF-"):
+                errorMsg = "Please upload a valid PDF file."
             else:
-                # Uses pick grader function which selects the TA with the least to grade.
-                models.Submission.objects.create(assignment=currAssign, author=currUser, file=fileSub, score=None, grader=pick_grader(currAssign))
-            return redirect(f"/{assignmentID}/")
+                if userSubmission is not None:
+                    if currAssign.deadline < now():
+                        return HttpResponseBadRequest("Submission deadline has passed. You cannot update your submission.")
+                    else:
+                        userSubmission.file = fileSub
+                        userSubmission.save()
+                else:
+                    # Uses pick grader function which selects the TA with the least to grade.
+                    models.Submission.objects.create(assignment=currAssign, author=currUser, file=fileSub, score=None, grader=pick_grader(currAssign))
+                return redirect(f"/{assignmentID}/")
 
 
     context = {
@@ -101,6 +112,7 @@ def assignment(request, assignmentID):
         "superUser" : isAdmin,
         "submissionStatus" : submissionStatus,
         "percentageGrade" : percentageGrade,
+        "error" : errorMsg
     }
 
     return render(request, "assignment.html", context)
@@ -269,7 +281,17 @@ def logout_form(request):
 @login_required
 def show_upload(request, filename):
     submission = models.Submission.objects.get(file__endswith=filename)
-    return HttpResponse(submission.file.open())
+    file = submission.view_submission(request.user)
+
+    # Check that each file ends with.pdf and the first 5 bytes are %PDF-
+    if not file.name.lower().endswith(".pdf") or not next(file.chunks(), b"").startswith(b"%PDF-"):
+        raise Http404
+    
+    response = HttpResponse(file.open())
+    response.headers["Content-Type"] = "application/pdf"
+    response.headers["Content-Disposition"] = "attachment; filename=" + file.name
+
+    return response
 
 # Choose the TA with the least assignments to grade to grade new assignment.
 def pick_grader(assignment):

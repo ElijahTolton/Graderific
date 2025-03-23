@@ -34,3 +34,10 @@ class Submission(models.Model):
             print("hello")
         else:
             raise PermissionDenied("You do not have premission to change grades")
+
+    # Define security policy in one place
+    def view_submission(self, user):
+        # If user is not a TA, author or superuser
+        if user != self.author and user != self.grader and not user.is_superuser:
+            raise PermissionDenied("You do not have premission to view this submission")
+        return self.file
