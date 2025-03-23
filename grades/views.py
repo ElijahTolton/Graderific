@@ -1,10 +1,12 @@
 from django.http import HttpResponse
+from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from . import models
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
 from django.contrib.auth import authenticate, login, logout
+from django.utils.timezone import now
 
 # Create your views here.
 
@@ -25,21 +27,36 @@ def assignment(request, assignmentID):
     myAssignedSubmissionCt = 1
     numStudents = 1
     userSubmission = None
+    submissionStatus = ""
+    percentageGrade = 0
 
     # Determine the type of the user
     isStudent = currUser.groups.filter(name="Students").exists()
     isTa = currUser.groups.filter(name="Teaching Assistants").exists()
     isAnonymous = not currUser.is_authenticated
-    print(isAnonymous)
     isAdmin = currUser.is_superuser
 
+    try:
+        userSubmission = models.Submission.objects.filter(assignment=currAssign, author=currUser).last()
+    except:
+        userSubmission = None
+
     if isStudent:
-        try:
-            userSubmission = models.Submission.objects.filter(assignment=currAssign, author=currUser).last()
-        except:
-            userSubmission = None
-            myAssignedSubmissionCt = 0
+        if userSubmission is None:
+            if currAssign.deadline < now():
+                submissionStatus = "Missing"
+            else:
+                submissionStatus = "Not Due"
+        else:
+            if userSubmission.score is None and currAssign.deadline < now():
+                submissionStatus = "Being Graded"
+            elif userSubmission.score is None and currAssign.deadline > now():
+                submissionStatus = "Ungraded"
+            else:
+                submissionStatus = "Graded"
+                percentageGrade = (userSubmission.score / currAssign.points) * 100
     elif isAnonymous:
+        submissionStatus = "Not Due"
         userSubmission = None
         myAssignedSubmissionCt = 0
     elif isTa:
@@ -56,11 +73,16 @@ def assignment(request, assignmentID):
             fileSub = request.FILES['file']
             
             if userSubmission is not None:
-                userSubmission.file = fileSub
-                userSubmission.save()
+                if currAssign.deadline < now():
+                    return HttpResponseBadRequest("Submission deadline has passed. You cannot update your submission.")
+                else:
+                    userSubmission.file = fileSub
+                    userSubmission.save()
             else:
-                models.Submission.objects.create(assignment=currAssign, author=currUser, file=fileSub, score=None, grader=None)
+                # Uses pick grader function which selects the TA with the least to grade.
+                models.Submission.objects.create(assignment=currAssign, author=currUser, file=fileSub, score=None, grader=pick_grader(currAssign))
             return redirect(f"/{assignmentID}/")
+
 
     context = {
         "submissionCount" : totSubmissions,
@@ -72,6 +94,8 @@ def assignment(request, assignmentID):
         "ta" : isTa,
         "loggedOut" :isAnonymous,
         "superUser" : isAdmin,
+        "submissionStatus" : submissionStatus,
+        "percentageGrade" : percentageGrade,
     }
 
     return render(request, "assignment.html", context)
@@ -138,15 +162,65 @@ def profile(request):
 
     if not currUser.is_authenticated:
         return redirect("/profile/login")
-        
-    assignmentList = models.Assignment.objects.annotate(
-        totalSubmissions=Count('submission', filter=Q(submission__grader=currUser)),
-        gradedSubmissions=Count('submission', filter=Q(submission__grader=currUser, submission__score__isnull=False)),
-    )
+    
+    isStudent = currUser.groups.filter(name="Students").exists()
+    finalGrade = 0
+    
+    # Show the staff view of the table
+    if not isStudent:
+        if currUser.is_superuser:
+            assignmentList = models.Assignment.objects.annotate(
+                totalSubmissions=Count('submission'),
+                gradedSubmissions=Count('submission', filter=Q(submission__score__isnull=False)),
+            )
+        else:
+            assignmentList = models.Assignment.objects.annotate(
+                totalSubmissions=Count('submission', filter=Q(submission__grader=currUser)),
+                gradedSubmissions=Count('submission', filter=Q(submission__grader=currUser, submission__score__isnull=False)),
+            )
+    else:
+        # Show the student's assignments and grades
+        assignmentList = models.Assignment.objects.all()
+        totalWeight = 0
+        totalEarned = 0
 
+        for assignment in assignmentList:
+            try:
+                submission = assignment.submission_set.filter(author=currUser).last()
+            except:
+                submission = None
+
+            earnedPoints = 0
+            percentageGrade = 0
+            # Calcuate submission status
+            if submission is None:
+                if assignment.deadline < now():
+                    subStatus = "Missing"
+                    totalWeight += assignment.weight
+                else:
+                    subStatus = "Not Due"
+            else:
+                if submission.score is None:
+                    subStatus = "Ungraded"
+                else:
+                    subStatus = "Graded"
+                    percentageGrade = (submission.score / assignment.points) * 100
+                    earnedPoints = (submission.score / assignment.points) * assignment.weight
+                    totalWeight += assignment.weight
+                    totalEarned += earnedPoints
+            
+            setattr(assignment, "submissionStatus", subStatus)
+            setattr(assignment, "percentageScore", percentageGrade)
+            setattr(assignment, "score", submission.score if submission else None)
+            setattr(assignment, "earnedPoints", earnedPoints)
+
+        finalGrade = round((totalEarned / totalWeight) * 100, 1)
+        
     context = {
         "curUser" : currUser,
         "assignments" : assignmentList,
+        "student" : isStudent,
+        "finalGrade" : finalGrade
     }
 
     return render(request, "profile.html", context)
@@ -162,7 +236,6 @@ def login_form(request):
             login(request, user)
             return redirect("/profile/")
         else:
-            print("Athuntificatio failed")
             return render(request, "login.html", {"error": "Invalid username or password"})
 
     return render(request, "login.html")
@@ -175,3 +248,11 @@ def logout_form(request):
 def show_upload(request, filename):
     submission = models.Submission.objects.get(file__endswith=filename)
     return HttpResponse(submission.file.open())
+
+# Choose the TA with the least assignments to grade to grade new assignment.
+def pick_grader(assignment):
+    tas = models.Group.objects.get(name="Teaching Assistants").user_set.annotate(
+        total_assigned=Count('graded_set')
+    ).order_by('total_assigned')
+    print(tas.first())
+    return tas.first()

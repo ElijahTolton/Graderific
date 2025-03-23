@@ -26,6 +26,7 @@ the live server extsneion doesn't work without them. -->
             </div>
         </section>
 
+        {% if not student %}
         <table>
             <thead>
                 <tr>
@@ -44,6 +45,34 @@ the live server extsneion doesn't work without them. -->
                 {% endfor %} 
             </tbody>
         </table>
+        {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Assignment</th>
+                    <th class="numColumn">Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assignment in assignments %}
+                    <tr>
+                        <td><a href="/{{ assignment.id }}" title="View assignment">{{ assignment.title }}</a></td>
+                        <td class="numColumn">
+                            {% if assignment.submissionStatus == "Graded" %}
+                                {{ assignment.percentageScore }}
+                            {% else %}
+                                {{ assignment.submissionStatus }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %} 
+            </tbody>
+            <tfoot>
+                <td>Final Grades</td>
+                <td class="numColumn">{{finalGrade}}%</td>
+            </tfoot>
+        </table>
+        {% endif %}
     </main>
 </body>
 

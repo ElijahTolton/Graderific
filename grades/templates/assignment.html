@@ -26,17 +26,25 @@ the live server extsneion doesn't work without them. -->
 
         {% if student  or loggedOut %}
             <section class="ActionBox">
-                {% if userSub is None %}
+                {% if submissionStatus == "Missing"%}
+                    <p>You did not submit this assignment and received 0 points</p>
+                {% elif submissionStatus == "Not Due"%}
                     <p>No current submission</p>
-                {% else %}
-                    <p>Current submission: <a href="{{ userSub.file.url }}">{{userSub.file.name}}</a></p>
+                {% elif submissionStatus == "Graded" %}
+                    <p>Your submission, <a href="{{ userSub.file.url }}" title="View submission">{{userSub.file.name}}</a>, received {{userSub.score}} / {{assignment.points}} ({{percentageGrade}}%)</p>
+                {% elif submissionStatus == "Being Graded"%}
+                    <p>Your submission, <a href="{{ userSub.file.url }}" title="View submission">{{userSub.file.name}}</a>, is being graded</p>
+                {% elif submissionStatus == "Ungraded"%}
+                    <p>Your current submission is <a href="{{ userSub.file.url }}" title="View submission">{{userSub.file.name}}</a></p>
                 {% endif %}
 
-                <form action="/{{ assignment.id }}/" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <input type="file" name="file">
-                    <button id="submit">Submit</button>
-                </form>
+                {% if submissionStatus == "Ungraded" or submissionStatus == "Not Due"%}
+                    <form action="/{{ assignment.id }}/" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="file" name="file">
+                        <button id="submit">Submit</button>
+                    </form>
+                {% endif %}
             </section>
         {% endif %}
         
