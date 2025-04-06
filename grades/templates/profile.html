@@ -31,7 +31,7 @@ the live server extsneion doesn't work without them. -->
             <thead>
                 <tr>
                     <th>Assignment</th>
-                    <th class="numColumn">Graded</th>
+                    <th style="text-align: right;" class="sortable">Graded</th>
                 </tr>
             </thead>
             <tbody>
@@ -50,7 +50,7 @@ the live server extsneion doesn't work without them. -->
             <thead>
                 <tr>
                     <th>Assignment</th>
-                    <th class="numColumn">Score</th>
+                    <th style="text-align: right; font-weight: bold;" class="sortable">Score</th>
                 </tr>
             </thead>
             <tbody>
@@ -59,7 +59,7 @@ the live server extsneion doesn't work without them. -->
                         <td><a href="/{{ assignment.id }}" title="View assignment">{{ assignment.title }}</a></td>
                         <td class="numColumn">
                             {% if assignment.submissionStatus == "Graded" %}
-                                {{ assignment.percentageScore }}
+                                {{ assignment.percentageScore }}%
                             {% else %}
                                 {{ assignment.submissionStatus }}
                             {% endif %}
