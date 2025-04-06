@@ -18,21 +18,21 @@ the live server extsneion doesn't work without them. -->
             <h1 class="pageTitle">All Assignments</h1>
             <div class="divLine"></div>
         </div>
-        <table>
+        <table class="sortable">
             <thead>
                 <tr>
                     <th>Assignment</th>
-                    <th>Due date</th>
-                    <th class="numColumn">Weight</th>
+                    <th class="sort-column">Due date</th>
+                    <th style="text-align: right;" class="sort-column">Weight</th>
                 </tr>
             </thead>
             <tbody>
                 <!-- Django templates funcitonality -->
                 {% for assignment in assignments %}
-                    <tr>
+                    <tr data-index = "{{ forloop.counter }}">
                         <td><a href= "/{{ assignment.id }}/" title="View assignment">{{ assignment.title }}</a></td>
-                        <td>{{ assignment.deadline|date:"b d"|capfirst }}</td>
-                        <td class="numColumn">{{ assignment.weight }}</td>
+                        <td data-value="{{assignment.deadline|date:'U' }}" >{{ assignment.deadline|date:"b d"|capfirst }}</td>
+                        <td data-value="{{assignment.weight}}" class="numColumn">{{ assignment.weight }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

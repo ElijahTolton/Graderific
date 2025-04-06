@@ -5,53 +5,77 @@ function say_hi(elt) {
 say_hi(document.querySelector("h1"));
 
 function make_table_sortable(table){
-    
-    console.log(table);
-    const lastHeaderCell = table.querySelector("thead tr th:last-child");
+    const headers = table.querySelectorAll("th.sort-column");
     const body = table.querySelector("tbody");
-    console.log(lastHeaderCell);
 
-    lastHeaderCell.addEventListener("click", function() {
-        sortAscOrDesc(lastHeaderCell, body);
+    // Add Event Listener for each sortable column in a sortable table.
+    headers.forEach(header =>{
+        // Add an event listener to each header when clicked reset all other
+        // headers class names to be unsorted.
+        header.addEventListener("click", (event)=>{
+            const columnIndex = event.target.cellIndex;
+
+            headers.forEach(h => {
+                if( h !== header) h.className = "sort-column";
+            });
+            sortAscOrDesc(header, body, columnIndex);
+        });
     });
 }
 
-make_table_sortable(document.querySelector("table"));
+make_table_sortable(document.querySelector("table.sortable"));
 
 /**
  * Reorders table data when the last header cell is clicked on.
  * @param {The last header of the table} lastHeaderCell 
  * @param {The body of the table} body 
  */
-function sortAscOrDesc(lastHeaderCell, body){
+function sortAscOrDesc(headerCell, body, columnIndex){
     // Get all rows in the body
     const rows = Array.from(body.querySelectorAll("tr"));
 
-    // get what sorting order it is.
-    const isAscending = lastHeaderCell.className == "sortable" || lastHeaderCell.className == "sort-desc";
+    // Get the current state of the data.
+    const isDesc = headerCell.className == "sort-desc";
+    const isAsc = headerCell.className == "sort-asc";
+    const isUnsorted = headerCell.className == "sort-column";
 
     // Sort according graded or scores. If no numeric value do not sort.
-    rows.sort((row1, row2) =>{
-        var value1 = row1.querySelector("td:last-child").innerText;
-        var value2 = row2.querySelector("td:last-child").innerText;
-
-        value1 = parseData(value1);
-        value2 = parseData(value2);
-
-        if(isNaN(value1) || isNaN(value2)){
-            return 0;
-        }
-
-        // compare the float score values
-        const compare = value1 - value2;
-
-        return isAscending ? compare : -compare;
-    });
-
+    // If unsorted -> ascending order, ascending->descending
+    if(isAsc || isUnsorted){
+        rows.sort((row1, row2) =>{
+            var value1 = row1.querySelector("td:nth-child(" + (columnIndex + 1) + ")").getAttribute("data-value");
+            var value2 = row2.querySelector("td:nth-child(" + (columnIndex + 1) + ")").getAttribute("data-value");
+    
+            value1 = parseData(value1);
+            value2 = parseData(value2);
+    
+            if(isNaN(value1) || isNaN(value2)){
+                return 0;
+            }
+    
+            // compare the float score values
+            const compare = value1 - value2;
+    
+            return isUnsorted ? compare : -compare;
+        });
+    }
+    // Data must be sorted descending. Descending->Unsorted
+    else{
+        rows.sort((row1, row2) =>{
+            return row1.getAttribute("data-index") - row2.getAttribute("data-index");
+        });
+    }
+    
     // Update class name
-    lastHeaderCell.className = isAscending ? "sort-asc" : "sort-desc";
+    if(isUnsorted)
+        headerCell.className = "sort-asc";
+    else if(isAsc)
+        headerCell.className = "sort-desc";
+    else if(isDesc)
+        headerCell.className = "sort-column";
 
-    rows.forEach( row => body.appendChild(row))
+    // Update rows in the DOM
+    rows.forEach( row => body.appendChild(row));
 }
 
 /**

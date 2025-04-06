@@ -27,18 +27,18 @@ the live server extsneion doesn't work without them. -->
         </section>
 
         {% if not student %}
-        <table>
+        <table class="sortable">
             <thead>
                 <tr>
                     <th>Assignment</th>
-                    <th style="text-align: right;" class="sortable">Graded</th>
+                    <th style="text-align: right;" class="sort-column">Graded</th>
                 </tr>
             </thead>
             <tbody>
                 {% for assignment in assignments %}
-                    <tr>
+                    <tr data-index = "{{ forloop.counter }}">
                         <td><a href="/{{ assignment.id }}/submissions/" title="View submissions">{{ assignment.title }}</a></td>
-                        <td class="numColumn">
+                        <td data-value="{{ assignment.gradedSubmissions }} / {{ assignment.totalSubmissions}}" class="numColumn">
                             {{ assignment.gradedSubmissions }} / {{ assignment.totalSubmissions}}
                         </td>
                     </tr>
@@ -46,18 +46,18 @@ the live server extsneion doesn't work without them. -->
             </tbody>
         </table>
         {% else %}
-        <table>
+        <table class="sortable">
             <thead>
                 <tr>
                     <th>Assignment</th>
-                    <th style="text-align: right; font-weight: bold;" class="sortable">Score</th>
+                    <th style="text-align: right; font-weight: bold;" class="sort-column">Score</th>
                 </tr>
             </thead>
             <tbody>
                 {% for assignment in assignments %}
-                    <tr>
+                    <tr data-index = "{{ forloop.counter }}">
                         <td><a href="/{{ assignment.id }}" title="View assignment">{{ assignment.title }}</a></td>
-                        <td class="numColumn">
+                        <td data-value="{{ assignment.percentageScore }}" class="numColumn">
                             {% if assignment.submissionStatus == "Graded" %}
                                 {{ assignment.percentageScore }}%
                             {% else %}

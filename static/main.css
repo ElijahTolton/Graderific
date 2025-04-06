@@ -215,3 +215,8 @@ input:invalid {
 tfoot{
     font-weight: bold;
 }
+
+/* Homework 6 changes */
+th.sort-column { cursor: pointer; }
+th.sort-asc::after { content: " \25b2"; }
+th.sort-desc::after { content: " \25bc"; }
