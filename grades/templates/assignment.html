@@ -39,13 +39,14 @@ the live server extsneion doesn't work without them. -->
                 {% endif %}
 
                 {% if submissionStatus == "Ungraded" or submissionStatus == "Not Due"%}
-                    <form action="/{{ assignment.id }}/" method="post" enctype="multipart/form-data">
+                    <form action="/{{ assignment.id }}/" method="post" enctype="multipart/form-data" class="formSubmit">
                         {% csrf_token %}
                         {% if error %}
                             <output>{{error}}</output>
                         {% endif %}
                         <input accept="application/pdf" type="file" name="file">
                         <button id="submit">Submit</button>
+                        <span class="message"></span>
                     </form>
                 {% endif %}
             </section>

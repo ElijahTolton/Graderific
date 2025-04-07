@@ -46,7 +46,8 @@ the live server extsneion doesn't work without them. -->
             </tbody>
         </table>
         {% else %}
-        <table class="sortable">
+        <button id="testGrade">Hypothesize</button>
+        <table class="sortable" id="">
             <thead>
                 <tr>
                     <th>Assignment</th>
@@ -57,7 +58,7 @@ the live server extsneion doesn't work without them. -->
                 {% for assignment in assignments %}
                     <tr data-index = "{{ forloop.counter }}">
                         <td><a href="/{{ assignment.id }}" title="View assignment">{{ assignment.title }}</a></td>
-                        <td data-value="{{ assignment.percentageScore }}" class="numColumn">
+                        <td class="grade" data-weight="{{ assignment.weight }}" data-value="{{ assignment.percentageScore }}" style="text-align: right;">
                             {% if assignment.submissionStatus == "Graded" %}
                                 {{ assignment.percentageScore }}%
                             {% else %}
@@ -69,7 +70,7 @@ the live server extsneion doesn't work without them. -->
             </tbody>
             <tfoot>
                 <td>Final Grades</td>
-                <td class="numColumn">{{finalGrade}}%</td>
+                <td class="numColumn" id="finalGrade">{{finalGrade}}%</td>
             </tfoot>
         </table>
         {% endif %}
