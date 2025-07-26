@@ -4,7 +4,7 @@ Author: Elijah Tolton
 Professor: Prof. Johnson
 Course: CS 3550
 Date: 1/24/2025
-Repo: https://github.com/University-of-Utah-CS3550/a2-css-layouts-ElijahTolton
+Repo: https://github.com/ElijahTolton/Graderific
 
 #Project overview
 This project is a grading application similar to an application like
@@ -35,3 +35,15 @@ grades with method=post in the input forms.
 Finished A5. Authentication and Authorization. This assingment I implemented login security,
 computing grades, protection from unauthorized user from accessing views and only
 allowing pdf submissions
+
+This project was completed throughout a semester in Web Dev I at the University of Utah.
+It allowed to get fimilar with integral parts of web development.
+Some of the technologies used in this project are
+- Python
+- Django Web framework
+- HTML5
+- CSS3
+- JavaScript
+- AWS for delpoying the site
+- NGINX as a proxy webserver to improve security and performance.
+- NameCheap for securing domain name with github student devloper package.
